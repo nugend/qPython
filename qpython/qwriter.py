@@ -180,6 +180,13 @@ class QWriter(object):
         self._buffer.write(b'\0')
 
 
+    @serialize(numpy.bool_)
+    def _write_boolean(self, data):
+        self._buffer.write(struct.pack('b', QBOOL))
+        fmt = STRUCT_MAP[QBOOL]
+        self._buffer.write(struct.pack(fmt, int(data)))
+
+
     @serialize(uuid.UUID)
     def _write_guid(self, data):
         if self._protocol_version < 3:
@@ -261,7 +268,7 @@ class QWriter(object):
         if qtype == QGENERAL_LIST:
             self._write_generic_list(data)
         elif qtype == QCHAR:
-            self._write_string(data.tostring())
+            self._write_string(data.tobytes())
         else:
             self._buffer.write(struct.pack('=bxi', -qtype, len(data)))
             if data.dtype.type in (numpy.datetime64, numpy.timedelta64):
@@ -280,5 +287,5 @@ class QWriter(object):
                 for guid in data:
                     self._buffer.write(guid.bytes)
             else:
-                self._buffer.write(data.tostring())
+                self._buffer.write(data.tobytes())
 

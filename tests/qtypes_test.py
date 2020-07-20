@@ -321,10 +321,10 @@ def test_array_from_raw_qtemporal():
 
     assert str(na_dt.dtype).startswith('datetime64[ms]')
     for x in range(len(na_dt)):
-        if not numpy.isnat(na_dt[x]):
-          assert na_dt[x] == ref[x]
+        if numpy.isnat(na_dt[x]):
+            assert numpy.isnat(ref[x])
         else:
-          assert numpy.isnan(raw[x])
+            assert na_dt[x] == ref[x]
 
 
 test_is_null()

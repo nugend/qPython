@@ -47,7 +47,7 @@ class QTemporalList(QList):
         return qtemporal(from_raw_qtemporal(numpy.ndarray.__getitem__(self, idx), -abs(self.meta.qtype)), qtype = -abs(self.meta.qtype))
 
     def __setitem__(self, idx, value):
-        numpy.ndarray.__setitem__(self, idx, to_raw_qtemporal(value, - -abs(self.meta.qtype)))
+        numpy.ndarray.__setitem__(self, idx, to_raw_qtemporal(value, -abs(self.meta.qtype)))
 
     def raw(self, idx):
         '''Gets the raw representation of the datetime object at the specified 
@@ -295,7 +295,17 @@ class QTable(numpy.recarray):
         self.meta = MetaData(**meta)
 
     def __eq__(self, other):
-        return numpy.array_equal(self, other)
+        if self.dtype.names != other.dtype.names:
+            return False
+        else:
+            return all(self._equal_column(self.field(f), other.field(f)) for f in self.dtype.names)
+
+    @staticmethod
+    def _equal_column(col_a, col_b):
+        try:
+            return numpy.array_equal(col_a, col_b, equal_nan = True)
+        except:
+            return numpy.array_equal(col_a, col_b)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -397,7 +407,7 @@ def qtable(columns, data, **meta):
 class QKeyedTable(object):
     '''Represents a q keyed table.
     
-    :class:`.QKeyedTable` is built with two :class:`.QTable`\s, one representing
+    :class:`.QKeyedTable` is built with two :class:`.QTable`s, one representing
     keys and the other values.
     
     Keyed tables example:
