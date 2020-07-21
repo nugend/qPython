@@ -34,7 +34,7 @@ else:
     use_cython = True
 
 if use_cython:
-    ext_modules = cythonize("qpython/fastutils.pyx")
+    ext_modules = cythonize("qpython/fastutils.pyx", language_level = "3")
 else:
     ext_modules = []
 
@@ -70,10 +70,7 @@ setup(
         "Operating System :: POSIX",
         "Operating System :: Unix",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
