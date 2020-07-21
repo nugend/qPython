@@ -33,12 +33,11 @@ class StringQReader(QReader):
             symbols = self._buffer.get_symbols(length)
             return [s.decode(self._encoding) for s in symbols]
         else:
-            return QReader._read_list(self, qtype = qtype)
+            return QReader._read_list(self, qtype=qtype)
 
     @parse(QSYMBOL)
-    def _read_symbol(self, qtype = QSYMBOL):
+    def _read_symbol(self, qtype=QSYMBOL):
         return numpy.string_(self._buffer.get_symbol()).decode(self._encoding)
-
 
 
 class ReverseStringQReader(QReader):
@@ -54,23 +53,21 @@ class ReverseStringQReader(QReader):
         return [s.decode(self._encoding)[::-1] for s in symbols]
 
     @parse(QSYMBOL)
-    def _read_symbol(self, qtype = QSYMBOL):
+    def _read_symbol(self, qtype=QSYMBOL):
         return numpy.string_(self._buffer.get_symbol()).decode(self._encoding)[::-1]
 
 
+if __name__ == "__main__":
+    with qconnection.QConnection(host="localhost", port=5000, reader_class=StringQReader) as q:
+        symbols = q.sendSync("`foo`bar")
+        print(symbols, type(symbols), type(symbols[0]))
 
-if __name__ == '__main__':
-    with qconnection.QConnection(host = 'localhost', port = 5000, reader_class = StringQReader) as q:
-        symbols = q.sendSync('`foo`bar')
-        print(symbols, type(symbols), type(symbols[0]))
-    
-        symbol = q.sendSync('`foo')
+        symbol = q.sendSync("`foo")
         print(symbol, type(symbol))
-    
-    
-    with qconnection.QConnection(host = 'localhost', port = 5000, reader_class = ReverseStringQReader) as q:
-        symbols = q.sendSync('`foo`bar')
+
+    with qconnection.QConnection(host="localhost", port=5000, reader_class=ReverseStringQReader) as q:
+        symbols = q.sendSync("`foo`bar")
         print(symbols, type(symbols), type(symbols[0]))
-    
-        symbol = q.sendSync('`foo')
+
+        symbol = q.sendSync("`foo")
         print(symbol, type(symbol))

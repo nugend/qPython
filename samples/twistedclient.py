@@ -25,9 +25,7 @@ from qpython.qreader import QReader
 from qpython.qwriter import QWriter, QWriterException
 
 
-
 class IPCProtocol(Protocol):
-
     class State(object):
         UNKNOWN = -1
         HANDSHAKE = 0
@@ -35,9 +33,9 @@ class IPCProtocol(Protocol):
 
     def connectionMade(self):
         self.state = IPCProtocol.State.UNKNOWN
-        self.credentials = self.factory.username + ':' + self.factory.password if self.factory.password else ''
+        self.credentials = self.factory.username + ":" + self.factory.password if self.factory.password else ""
 
-        self.transport.write(self.credentials + '\3\0')
+        self.transport.write(self.credentials + "\3\0")
 
         self._message = None
 
@@ -46,28 +44,28 @@ class IPCProtocol(Protocol):
             try:
                 if not self._message:
                     self._message = self._reader.read_header(source=data)
-                    self._buffer = ''
+                    self._buffer = ""
 
                 self._buffer += data
                 buffer_len = len(self._buffer) if self._buffer else 0
 
                 while self._message and self._message.size <= buffer_len:
-                    complete_message = self._buffer[:self._message.size]
+                    complete_message = self._buffer[: self._message.size]
 
                     if buffer_len > self._message.size:
-                        self._buffer = self._buffer[self._message.size:]
+                        self._buffer = self._buffer[self._message.size :]
                         buffer_len = len(self._buffer) if self._buffer else 0
                         self._message = self._reader.read_header(source=self._buffer)
                     else:
                         self._message = None
-                        self._buffer = ''
+                        self._buffer = ""
                         buffer_len = 0
 
                     self.factory.onMessage(self._reader.read(source=complete_message, numpy_temporals=True))
             except:
                 self.factory.onError(sys.exc_info())
                 self._message = None
-                self._buffer = ''
+                self._buffer = ""
 
         elif self.state == IPCProtocol.State.UNKNOWN:
             # handshake
@@ -75,18 +73,18 @@ class IPCProtocol(Protocol):
                 self._init(data)
             else:
                 self.state = IPCProtocol.State.HANDSHAKE
-                self.transport.write(self.credentials + '\0')
+                self.transport.write(self.credentials + "\0")
 
         else:
             # protocol version fallback
             if len(data) == 1:
                 self._init(data)
             else:
-                raise QAuthenticationException('Connection denied.')
+                raise QAuthenticationException("Connection denied.")
 
     def _init(self, data):
         self.state = IPCProtocol.State.CONNECTED
-        self.protocol_version = min(struct.unpack('B', data)[0], 3)
+        self.protocol_version = min(struct.unpack("B", data)[0], 3)
         self._writer = QWriter(stream=None, protocol_version=self.protocol_version)
         self._reader = QReader(stream=None)
 
@@ -94,13 +92,12 @@ class IPCProtocol(Protocol):
 
     def query(self, msg_type, query, *parameters):
         if parameters and len(parameters) > 8:
-            raise QWriterException('Too many parameters.')
+            raise QWriterException("Too many parameters.")
 
         if not parameters or len(parameters) == 0:
             self.transport.write(self._writer.write(query, msg_type))
         else:
             self.transport.write(self._writer.write([query] + list(parameters), msg_type))
-
 
 
 class IPCClientFactory(ClientFactory):
@@ -118,9 +115,8 @@ class IPCClientFactory(ClientFactory):
         self.data_callback = data_callback
         self.error_callback = error_callback
 
-
     def clientConnectionLost(self, connector, reason):
-        print('Lost connection.  Reason: %s' % reason)
+        print("Lost connection.  Reason: %s" % reason)
         # connector.connect()
 
     def clientConnectionFailed(self, connector, reason):
@@ -145,28 +141,26 @@ class IPCClientFactory(ClientFactory):
             self.client.query(msg_type, query, *parameters)
 
 
-
 def onConnectSuccess(source):
-    print('Connected, protocol version: %s' % source.client.protocol_version)
-    source.query(MessageType.SYNC, '.z.ts:{(handle)(`timestamp$100?1000000000000000000)}')
-    source.query(MessageType.SYNC, '.u.sub:{[t;s] handle:: neg .z.w}')
-    source.query(MessageType.ASYNC, '.u.sub', 'trade', '')
+    print("Connected, protocol version: %s" % source.client.protocol_version)
+    source.query(MessageType.SYNC, ".z.ts:{(handle)(`timestamp$100?1000000000000000000)}")
+    source.query(MessageType.SYNC, ".u.sub:{[t;s] handle:: neg .z.w}")
+    source.query(MessageType.ASYNC, ".u.sub", "trade", "")
 
 
 def onConnectFail(source, reason):
-    print('Connection refused: %s' % reason)
+    print("Connection refused: %s" % reason)
 
 
 def onMessage(source, message):
-    print('Received: %s %s' % (message.type, message.data))
+    print("Received: %s %s" % (message.type, message.data))
 
 
 def onError(source, error):
-    print('Error: %s' % error)
+    print("Error: %s" % error)
 
 
-if __name__ == '__main__':
-    factory = IPCClientFactory('user', 'pwd', onConnectSuccess, onConnectFail, onMessage, onError)
-    reactor.connectTCP('localhost', 5000, factory)
+if __name__ == "__main__":
+    factory = IPCClientFactory("user", "pwd", onConnectSuccess, onConnectFail, onMessage, onError)
+    reactor.connectTCP("localhost", 5000, factory)
     reactor.run()
-

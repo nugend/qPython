@@ -14,11 +14,10 @@
 #  limitations under the License.
 #
 
-__all__ = ['qconnection', 'qtype', 'qtemporal', 'qcollection']
+__all__ = ["qconnection", "qtype", "qtemporal", "qcollection"]
 
 
-__version__ = '2.0.0'
-
+__version__ = "2.0.0"
 
 
 try:
@@ -30,20 +29,21 @@ else:
 
 
 class MetaData(object):
-    '''Utility class for enriching data structures with meta data, e.g. qtype hint.'''
+    """Utility class for enriching data structures with meta data, e.g. qtype hint."""
+
     def __init__(self, **kw):
         self.__dict__.update(kw)
 
     def __repr__(self):
         if not self.__dict__.items():
-            return 'metadata()'
+            return "metadata()"
 
-        s = ['metadata(']
+        s = ["metadata("]
         for k, v in self.__dict__.items():
-            s.append('%s=%s' % (k, repr(v)))
-            s.append(', ')
-        s[-1] = ')'
-        return ''.join(s)
+            s.append("%s=%s" % (k, repr(v)))
+            s.append(", ")
+        s[-1] = ")"
+        return "".join(s)
 
     def __getattr__(self, attr):
         return None
@@ -61,9 +61,4 @@ class MetaData(object):
         return dict(list(self.as_dict().items()) + list(kw.items()))
 
 
-
-CONVERSION_OPTIONS = MetaData(raw = False,
-                              numpy_temporals = False,
-                              pandas = False,
-                              single_char_strings = False
-                             )
+CONVERSION_OPTIONS = MetaData(raw=False, numpy_temporals=False, pandas=False, single_char_strings=False)

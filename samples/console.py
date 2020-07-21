@@ -24,20 +24,20 @@ except NameError:
     pass
 
 
-if __name__ == '__main__':
-    print('qPython %s Cython extensions enabled: %s' % (qpython.__version__, qpython.__is_cython_enabled__))
-    with qconnection.QConnection(host = 'localhost', port = 5000) as q:
+if __name__ == "__main__":
+    print("qPython %s Cython extensions enabled: %s" % (qpython.__version__, qpython.__is_cython_enabled__))
+    with qconnection.QConnection(host="localhost", port=5000) as q:
         print(q)
-        print('IPC version: %s. Is connected: %s' % (q.protocol_version, q.is_connected()))
+        print("IPC version: %s. Is connected: %s" % (q.protocol_version, q.is_connected()))
 
         while True:
             try:
-                x = input('Q)')
+                x = input("Q)")
             except EOFError:
-                print('')
+                print("")
                 break
 
-            if x == '\\\\':
+            if x == "\\\\":
                 break
 
             try:
@@ -45,4 +45,4 @@ if __name__ == '__main__':
                 print(type(result))
                 print(result)
             except QException as msg:
-                print('q error: \'%s' % msg)
+                print("q error: '%s" % msg)

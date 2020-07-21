@@ -16,7 +16,6 @@
 import numpy
 
 
-
 def uncompress(data, uncompressed_size):
     _0 = numpy.intc(0)
     _1 = numpy.intc(1)
@@ -28,9 +27,9 @@ def uncompress(data, uncompressed_size):
     i, d = _1, _1
     f = _255 & data[_0]
 
-    ptrs = numpy.zeros(256, dtype = numpy.intc)
-    uncompressed = numpy.zeros(uncompressed_size, dtype = numpy.uint8)
-    idx = numpy.arange(uncompressed_size, dtype = numpy.intc)
+    ptrs = numpy.zeros(256, dtype=numpy.intc)
+    uncompressed = numpy.zeros(uncompressed_size, dtype=numpy.uint8)
+    idx = numpy.arange(uncompressed_size, dtype=numpy.intc)
 
     while s < uncompressed_size:
         pp = p + _1
@@ -38,7 +37,7 @@ def uncompress(data, uncompressed_size):
         if f & i:
             r = ptrs[data[d]]
             n = _2 + data[d + _1]
-            uncompressed[idx[s:s + n]] = uncompressed[r:r + n]
+            uncompressed[idx[s : s + n]] = uncompressed[r : r + n]
 
             ptrs[(uncompressed[p]) ^ (uncompressed[pp])] = p
             if s == pp:
