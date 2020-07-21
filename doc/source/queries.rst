@@ -65,29 +65,17 @@ Asynchronous queries
 
 Calls a anonymous function with a single parameter:
         
-<<<<<<< HEAD
-    >>> q.send('{til x}', 10)
-
-Executes a q expression:
-
-    >>> q.send('til 10')
-=======
     >>> q.sendAsync('{til x}', 10)
 
 Executes a q expression:
 
     >>> q.sendAsync('til 10')
->>>>>>> 2cd4281... renamed 'sync' and 'async' methods 'sendSync' and 'sendAsync
 
 .. note:: The asynchronous query doesn't fetch the result. Query result has
           to be retrieved explicitly.
 
 In order to retrieve query result (for the 
-<<<<<<< HEAD
-:func:`~qpython.qconnection.QConnection.send` or 
-=======
 :func:`~qpython.qconnection.QConnection.sendAsync` or 
->>>>>>> 2cd4281... renamed 'sync' and 'async' methods 'sendSync' and 'sendAsync
 :func:`~qpython.qconnection.QConnection.query` methods), one has to call:
  
 - :func:`~qpython.qconnection.QConnection.receive` method, which reads next 
@@ -107,13 +95,8 @@ QMessage: message type: 2, data size: 13, is_compressed: False, data: 10
 >>> print(q.receive(data_only = True, raw = False))
 10
 
-<<<<<<< HEAD
->>> q.sync('asynchMult:{[a;b] res:a*b; (neg .z.w)(res) }')
->>> q.send('asynchMult', 2, 3)
-=======
 >>> q.sendSync('asynchMult:{[a;b] res:a*b; (neg .z.w)(res) }')
 >>> q.sendAsync('asynchMult', 2, 3)
->>>>>>> 2cd4281... renamed 'sync' and 'async' methods 'sendSync' and 'sendAsync
 >>> print(q.receive())
 6
 
@@ -130,13 +113,8 @@ Type conversions configuration
 
 Type conversion options can be overwritten while:
 
-<<<<<<< HEAD
-- executing synchronous query: :meth:`~qpython.qconnection.QConnection.sync`
-- executing asynchronous query: :meth:`~qpython.qconnection.QConnection.send`
-=======
 - executing synchronous query: :meth:`~qpython.qconnection.QConnection.sendSync`
 - executing asynchronous query: :meth:`~qpython.qconnection.QConnection.sendAsync`
->>>>>>> 2cd4281... renamed 'sync' and 'async' methods 'sendSync' and 'sendAsync
 - retrieving data from q: :meth:`~qpython.qconnection.QConnection.receive`
 
 These methods accepts the `options` keywords arguments::
